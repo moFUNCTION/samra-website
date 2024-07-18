@@ -1,8 +1,15 @@
-import { addDoc, doc, getDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  serverTimestamp,
+} from "firebase/firestore";
 import { db } from "../../Config/Config";
 import { getFirebaseErrorMessageInArabic } from "../../lib/ErrorTranslatorToArabic/ErrorTranslatorToArabic";
 
 export class AddOrder {
+  #collection = "Orders";
   constructor({
     location,
     phoneNumber,
@@ -31,18 +38,25 @@ export class AddOrder {
   }
   async #AddOrderToFireStore() {
     const isDiscountExist = await this.CheckIfDiscountExist();
-    await addDoc(db, {
+    let Data = {
       status: "pending",
       order: this.order,
       userId: this.userID,
       location: this.location,
-      [this.phoneNumber && "phoneNumber"]: this.phoneNumber,
-      [this.discountCode && "discountCode"]: this.discountCode,
-      [this.providedText && "providedText"]: this.providedText,
-      [this.discountCode && isDiscountExist && "discountCode"]:
-        this.discountCode,
       totalPrice: this.totalPrice,
-    });
+      createdAt: serverTimestamp(),
+    };
+    if (this.phoneNumber) {
+      Data.phoneNumber = this.phoneNumber;
+    }
+    if (this.providedText) {
+      Data.providedText = this.providedText;
+    }
+    if (this.discountCode && isDiscountExist) {
+      Data.discountCode = this.discountCode;
+    }
+    const ordersRef = collection(db, this.#collection);
+    await addDoc(ordersRef, Data);
   }
   async AddRequest() {
     try {

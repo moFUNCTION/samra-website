@@ -30,7 +30,6 @@ export const useGetEvents = () => {
         type: "FETCH_SUCCESS",
         payload: data,
       });
-      sessionStorage.setItem("events", JSON.stringify(data));
     } catch (err) {
       dispach({
         type: "FETCH_ERROR",
@@ -39,15 +38,6 @@ export const useGetEvents = () => {
     }
   };
   useEffect(() => {
-    const events = JSON.parse(sessionStorage.getItem("events"));
-
-    if (events && events.length !== 0) {
-      dispach({
-        type: "FETCH_SUCCESS",
-        payload: events,
-      });
-      return;
-    }
     GetEvents();
   }, []);
   return events;

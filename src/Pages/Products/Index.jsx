@@ -28,6 +28,7 @@ export default function Index() {
     HandleGetNextPage,
     HandleGetPreviousPage,
     loading,
+    error,
     page,
     count,
   } = useGetProducts({
@@ -35,6 +36,7 @@ export default function Index() {
     whereQueries: whereQueries,
     orderByQueries: orderByQueries,
   });
+
   let pagesNumber = count?.count ? Math.ceil(count?.count / 6) : 0;
   useEffect(() => {
     window.scrollTo(0, 0);

@@ -29,7 +29,6 @@ export const useGetCategories = () => {
         type: "FETCH_SUCCESS",
         payload: data,
       });
-      sessionStorage.setItem("categories", JSON.stringify(data));
     } catch (err) {
       dispach({
         type: "FETCH_ERROR",
@@ -38,14 +37,6 @@ export const useGetCategories = () => {
     }
   };
   useEffect(() => {
-    const categories = JSON.parse(sessionStorage.getItem("categories"));
-    if (categories && categories.length !== 0) {
-      dispach({
-        type: "FETCH_SUCCESS",
-        payload: categories,
-      });
-      return;
-    }
     GetCategories();
   }, []);
   return categories;

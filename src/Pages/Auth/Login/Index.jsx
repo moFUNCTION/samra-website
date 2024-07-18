@@ -103,16 +103,19 @@ export default function Index() {
           borderRadius="lg"
           gap="4"
         >
-          <Heading
-            bgColor="orange.50"
-            p="5"
-            borderRadius="lg"
-            size="md"
-            w="100%"
-            color="orange.800"
-          >
-            {state.message}
-          </Heading>
+          {state?.message && (
+            <Heading
+              bgColor="orange.50"
+              p="5"
+              borderRadius="lg"
+              size="md"
+              w="100%"
+              color="orange.800"
+            >
+              {state.message}
+            </Heading>
+          )}
+
           <Heading
             size="md"
             borderBottom="2px"

@@ -12,7 +12,6 @@ import React from "react";
 import { GridSystem } from "../GridSystem/GridSystem";
 import { Logo } from "../Logo/Logo";
 import { FaFacebook, FaInstagram, FaPhone, FaWhatsapp } from "react-icons/fa";
-import { Header } from "../Header/Header";
 import { CgArrowTopLeft } from "react-icons/cg";
 
 export const Footer = () => {

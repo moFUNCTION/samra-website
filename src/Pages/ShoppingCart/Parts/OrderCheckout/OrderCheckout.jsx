@@ -24,14 +24,17 @@ import { getUserLocation } from "../../../../Utils/GetLocation/GetLocation";
 import styles from "./styles.module.css";
 import { LocationModal } from "../../../../Components/Common/LocationModal/LocationModal";
 import { Order } from "../../../../@Firebase/Utils/Order/Order";
+import { useNavigate } from "react-router-dom";
 export const OrderCheckout = () => {
+  const Navigate = useNavigate();
   const toast = useToast({
     duration: 3000,
     isClosable: true,
     position: "top-right",
   });
   const { user } = UseUserData();
-  const { totalPrice, shoppingCart } = useShoppingCart();
+  const { totalPrice, shoppingCart, onDeleteAllShoppingCartItems } =
+    useShoppingCart();
   const [locationGeo, setLocationGeo] = useState();
   const {
     register,
@@ -43,24 +46,12 @@ export const OrderCheckout = () => {
   } = useForm({
     resolver: zodResolver(schema),
     mode: "onBlur",
-    defaultValues: async () => {
-      const data = localStorage.getItem("order-form-data");
-      if (!data) {
-        return {
-          locationType: "currentLocation",
-          phoneType: "customPhoneNumber",
-        };
-      } else {
-        return JSON.parse(data);
-      }
+    defaultValues: {
+      locationType: "currentLocation",
+      phoneType: "customPhoneNumber",
     },
   });
-  useEffect(() => {
-    const save_event = window.addEventListener("beforeunload", () => {
-      localStorage.setItem("order-form-data", JSON.stringify(getValues()));
-    });
-    return () => window.removeEventListener("beforeunload", save_event);
-  }, []);
+
   const locationType = useWatch({ control, name: "locationType" });
   const HandleChangeLocationType = (value) => {
     setValue("locationType", value);
@@ -76,13 +67,27 @@ export const OrderCheckout = () => {
     try {
       let orderData = {
         ...data,
+        order: shoppingCart.map((item) => {
+          const { id, price, providedText, sizesRequested } = item;
+          return {
+            id,
+            price,
+            providedText,
+            sizesRequested,
+          };
+        }),
+        totalPrice,
         [locationType === "currentLocation" && locationGeo && "location"]:
           locationGeo,
-        [phoneType === "accountPhoneNumber" && "phoneNumber"]:
-          user.data?.phoneNumber,
+        phoneNumber:
+          data.phoneType === "accountPhoneNumber"
+            ? user.data.phoneNumber
+            : data.phoneNumber,
       };
       const order_init = new Order(orderData);
-      const req = await order_init.Add();
+      const req = await order_init.Add({ userID: user.data.uid });
+      onDeleteAllShoppingCartItems();
+      Navigate("/orders");
     } catch (err) {
       toast({
         title: "خطأ",
@@ -114,6 +119,7 @@ export const OrderCheckout = () => {
     onOpen: onOpenLocationModal,
     onClose: onCloseLocationModal,
   } = useDisclosure();
+  console.log(shoppingCart);
   return (
     <>
       <LocationModal
@@ -262,6 +268,7 @@ export const OrderCheckout = () => {
           isLoading={isSubmitting}
           onClick={handleSubmit(onSubmit)}
           colorScheme="orange"
+          isDisabled={shoppingCart.length === 0}
         >
           اتمام الطلبية
         </Button>

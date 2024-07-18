@@ -65,12 +65,7 @@ export const useGetProducts = ({
 
   const [queryRef, setQueryRef] = useState(createQuery());
   useEffect(() => {
-    if (
-      orderByQueries !== memoOrderedByQueriesArray ||
-      whereQueries !== memoWhereQueries
-    ) {
-      setQueryRef(createQuery());
-    }
+    setQueryRef(createQuery());
     dispach({ type: "PAGE_RESET" });
   }, [memoOrderedByQueriesArray, memoWhereQueries]);
 

@@ -5,7 +5,7 @@ import { createContext } from "react";
 import { useGetProducts } from "./../../@Firebase/Hooks/Products/useGetProducts/useGetProducts";
 const ShoppingCartContext = createContext();
 class ShoppingCartItem {
-  constructor({ productId, sizesRequested, providedText }) {
+  constructor({ productId, sizesRequested, providedText = "لا نص مرفق" }) {
     const sizes = sizesRequested.map((sizeRequested) => {
       return {
         quantity: 1,
@@ -120,6 +120,10 @@ export const ShoppingCartProvider = ({ children }) => {
       })
     );
   };
+  const onDeleteAllShoppingCartItems = () => {
+    setShoppingCart([]);
+    localStorage.removeItem("shopping-cart");
+  };
   const totalPrice =
     shoppingCart.length > 0
       ? shoppingCart.reduce((acc, curr_product) => {
@@ -136,6 +140,7 @@ export const ShoppingCartProvider = ({ children }) => {
         totalPrice,
         GetItemInShoppingCart,
         onUpdateProductProvidedText,
+        onDeleteAllShoppingCartItems,
       }}
     >
       {children}

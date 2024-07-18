@@ -4,7 +4,6 @@ export class Order {
   constructor({
     location,
     phoneNumber,
-    userID,
     discountCode,
     providedText,
     order,
@@ -12,7 +11,6 @@ export class Order {
   }) {
     this.location = location;
     this.phoneNumber = phoneNumber;
-    this.userID = userID;
     this.discountCode = discountCode;
     this.providedText = providedText;
     this.order = order;
@@ -29,8 +27,8 @@ export class Order {
       totalPrice: this.totalPrice,
     };
   }
-  async Add() {
-    const add_init = new AddOrder(this.#getValues());
+  async Add({ userID }) {
+    const add_init = new AddOrder({ ...this.#getValues(), userID });
     const req = await add_init.AddRequest();
   }
   async Update() {}

@@ -101,7 +101,7 @@ export const Header = () => {
         <HStack justifyContent="center" gap="2">
           <Tooltip label="حسابك يكبير">
             <IconButton
-              onClick={isPhoneQuery && onOpenSlideMenu}
+              onClick={onOpenSlideMenu}
               borderRadius="full"
               p="1"
               w="fit-content"
@@ -144,6 +144,8 @@ export const Header = () => {
               variant="outline"
               bgColor="orange.50"
               borderRadius="full"
+              as={Link}
+              to="/orders"
             >
               الطلبيات المنفذة
             </Button>
